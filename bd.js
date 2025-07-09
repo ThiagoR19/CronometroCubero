@@ -1,35 +1,33 @@
-import pg from 'pg'
+import pkg from 'pg'
+const { Pool } = pkg
 
-// const config = {
-//   user: "renderclickea",
-//   port: "5432",
-//   password: "eB00vXuFg4752FbHLL5oCNNKfzIp69Lh",
-//   database: "timer_34o2",
-//   host: "postgresql://renderclickea:eB00vXuFg4752FbHLL5oCNNKfzIp69Lh@dpg-cutjksl2ng1s73db6pag-a/timer_34o2"
-// }
-
-// const config = {
-//   user: 'timer_59fq_user',
-//   port: '5432',
-//   password: 'PZzEShfR1P0mFlufE84teqgUjo6volVx',
-//   database: 'timer_59fq',
-//   host: 'dpg-d1n97gjipnbc73crejq0-a'
-// }
-
-const pool = new pg.Pool({
-  connectionString: 'postgresql://timer_59fq_user:PZzEShfR1P0mFlufE84teqgUjo6volVx@dpg-d1n97gjipnbc73crejq0-a.oregon-postgres.render.com/timer_59fq',
-  ssl: true
+const pool = new Pool({
+  user: 'timer_59fq_user',
+  host: 'dpg-d1n97gjipnbc73crejq0-a.oregon-postgres.render.com',
+  database: 'timer_59fq',
+  password: 'PZzEShfR1P0mFlufE84teqgUjo6volVx',
+  port: 5432,
+  ssl: { rejectUnauthorized: false } // necesario para Render
 })
 
+// Insertar nuevo tiempo
 export async function newTime (actualData) {
-  await pool.query('insert into times (timeValue, scramble) values (?,?)', [actualData.time, actualData.scramble])
+  await pool.query(
+    'INSERT INTO times (timeValue, scramble) VALUES ($1, $2)',
+    [actualData.time, actualData.scramble]
+  )
 }
 
+// Obtener todos los tiempos
 export async function getTimes () {
-  const [times] = await pool.query('SELECT * from times')
-  return { data: times }
+  const result = await pool.query('SELECT * FROM times')
+  return { data: result.rows }
 }
 
+// Eliminar tiempo por ID
 export async function deleteTime (timeId) {
-  await pool.query('DELETE FROM times WHERE timeId = ?', [timeId.time])
+  await pool.query(
+    'DELETE FROM times WHERE timeId = $1',
+    [timeId.time]
+  )
 }

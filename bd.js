@@ -17,7 +17,8 @@ import pg from 'pg'
 // }
 
 const pool = new pg.Pool({
-  connectionString: 'postgresql://timer_59fq_user:PZzEShfR1P0mFlufE84teqgUjo6volVx@dpg-d1n97gjipnbc73crejq0-a/timer_59fq'
+  connectionString: 'postgresql://timer_59fq_user:PZzEShfR1P0mFlufE84teqgUjo6volVx@dpg-d1n97gjipnbc73crejq0-a.oregon-postgres.render.com/timer_59fq',
+  ssl: true
 })
 
 export async function newTime (actualData) {

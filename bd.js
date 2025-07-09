@@ -1,5 +1,13 @@
 import mysql from 'mysql2/promise'
 
+// const config = {
+//   user: "renderclickea",
+//   port: "5432",
+//   password: "eB00vXuFg4752FbHLL5oCNNKfzIp69Lh",
+//   database: "timer_34o2",
+//   host: "postgresql://renderclickea:eB00vXuFg4752FbHLL5oCNNKfzIp69Lh@dpg-cutjksl2ng1s73db6pag-a/timer_34o2"
+// }
+
 const config = {
   user: "root",
   port: "3306",
@@ -7,6 +15,7 @@ const config = {
   database: "timer",
   host: "localhost"
 }
+
 
 const connection = await mysql.createConnection(config)
 

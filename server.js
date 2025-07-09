@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { newTime, getTimes, deleteTime } from './bd.js'
+import dotenv from 'dotenv'
 
 const app = express()
 

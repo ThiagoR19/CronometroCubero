@@ -1,7 +1,6 @@
 import express from 'express'
 import cors from 'cors'
 import { newTime, getTimes, deleteTime } from './bd.js'
-import dotenv from 'dotenv'
 
 const app = express()
 
@@ -26,10 +25,8 @@ app.post('/deleteTime', (req, res) => {
   res.send('Time deleted succesfully!')
 })
 
-
 const PORT = process.env.PORT ?? 1235
 
 app.listen(PORT, () => {
   console.log(`App listening on http://localhost:${PORT}`)
 })
-

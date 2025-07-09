@@ -1,4 +1,3 @@
-import mysql from 'mysql2/promise'
 import pg from 'pg'
 
 // const config = {

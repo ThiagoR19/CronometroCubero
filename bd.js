@@ -20,26 +20,58 @@ const poolConfig = process.env.DATABASE_URL
 
 const pool = new Pool(poolConfig)
 
+function quoteIdentifier(identifier) {
+  return `"${identifier.replaceAll('"', '""')}"`
+}
+
+async function getTimesColumns() {
+  const result = await pool.query(
+    `SELECT column_name
+     FROM information_schema.columns
+     WHERE table_schema = 'public' AND table_name = 'times'`
+  )
+
+  const columns = new Map(
+    result.rows.map(({ column_name }) => [column_name.toLowerCase(), column_name])
+  )
+  const id = columns.get('timeid')
+  const value = columns.get('timevalue')
+  const scramble = columns.get('scramble')
+
+  if (!id || !value || !scramble) {
+    throw new Error('The times table must contain timeId, timeValue and scramble columns')
+  }
+
+  return { id, value, scramble }
+}
+
 // Insertar nuevo tiempo
 export async function newTime(actualData) {
+  const columns = await getTimesColumns()
   await pool.query(
-    'INSERT INTO times (timeValue, scramble) VALUES ($1, $2)',
+    `INSERT INTO "times" (${quoteIdentifier(columns.value)}, ${quoteIdentifier(columns.scramble)}) VALUES ($1, $2)`,
     [actualData.time, actualData.scramble]
   )
 }
 
 // Obtener todos los tiempos
 export async function getTimes() {
+  const columns = await getTimesColumns()
   const result = await pool.query(
-    'SELECT timeid AS "timeId", timevalue AS "timeValue", scramble FROM times ORDER BY timeid ASC'
+    `SELECT ${quoteIdentifier(columns.id)} AS "timeId",
+            ${quoteIdentifier(columns.value)} AS "timeValue",
+            ${quoteIdentifier(columns.scramble)} AS "scramble"
+     FROM "times"
+     ORDER BY ${quoteIdentifier(columns.id)} ASC`
   )
   return { data: result.rows }
 }
 
 // Eliminar tiempo por ID
 export async function deleteTime(timeId) {
+  const columns = await getTimesColumns()
   await pool.query(
-    'DELETE FROM times WHERE timeId = $1',
+    `DELETE FROM "times" WHERE ${quoteIdentifier(columns.id)} = $1`,
     [timeId.time]
   )
 }

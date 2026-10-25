@@ -1,16 +1,16 @@
 import pkg from 'pg'
 
-import { user, host, database, password, port } from './env'
+import 'dotenv/config'
 
 const { Pool } = pkg
 
 const pool = new Pool({
-  user,
-  host,
-  database,
-  password,
-  port,
-  ssl: { rejectUnauthorized: false } // necesario para Render
+  user: process.env.user,
+  host: process.env.host,
+  database: process.env.database,
+  password: process.env.password,
+  port: process.env.portc,
+  ssl: { rejectUnauthorized: false }
 })
 
 // Insertar nuevo tiempo

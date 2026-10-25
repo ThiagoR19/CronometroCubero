@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { newTime, getTimes, deleteTime } from './bd.js'
+import { newTime, getTimes, deleteTime, initializeDatabase } from './bd.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 1235
@@ -43,6 +43,16 @@ app.post('/deleteTime', async (req, res) => {
   }
 })
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`App listening on port ${PORT}`)
-})
+async function startServer() {
+  try {
+    await initializeDatabase()
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`App listening on port ${PORT}`)
+    })
+  } catch (error) {
+    console.error('Could not initialize database:', error)
+    process.exit(1)
+  }
+}
+
+startServer()

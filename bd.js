@@ -45,6 +45,16 @@ async function getTimesColumns() {
   return { id, value, scramble }
 }
 
+export async function initializeDatabase() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS "times" (
+      timeid SERIAL PRIMARY KEY,
+      timevalue VARCHAR(15) NOT NULL,
+      scramble TEXT NOT NULL
+    )
+  `)
+}
+
 // Insertar nuevo tiempo
 export async function newTime(actualData) {
   const columns = await getTimesColumns()

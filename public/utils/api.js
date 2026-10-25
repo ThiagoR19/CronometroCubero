@@ -1,8 +1,10 @@
 const timerElement = document.getElementById('times')
 const timerContainer = document.getElementById('containerTimes')
 
+import 'dotenv/config'
+
 export async function newTime(actualData) {
-  await fetch(`http://localhost:1235/newtime`, {
+  await fetch(`https://${process.env.host}:${process.env.port}/newtime`, {
     method: 'POST',
     body: JSON.stringify(actualData),
     headers: {
@@ -12,7 +14,7 @@ export async function newTime(actualData) {
 }
 
 export async function getTimes() {
-  await fetch('http://localhost:1235/getTimes')
+  await fetch(`https://${process.env.host}:${process.env.port}/getTimes`)
     .then(async response => {
       if (!response.ok) throw new Error(`Error HTTP: ${response.status}`)
       return response.json()

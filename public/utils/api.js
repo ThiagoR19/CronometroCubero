@@ -54,7 +54,7 @@ export async function getTimes() {
 }
 
 export async function deleteTime(timeId) {
-  await fetch(`http://localhost:1235/deleteTime`, {
+  await fetch(`https://${process.env.host}:${process.env.port}/deleteTime`, {
     method: 'POST',
     body: JSON.stringify(timeId),
     headers: {

@@ -4,14 +4,21 @@ import 'dotenv/config'
 
 const { Pool } = pkg
 
-const pool = new Pool({
-  user: process.env.user,
-  host: process.env.host,
-  database: process.env.database,
-  password: process.env.password,
-  port: process.env.port,
-  ssl: { rejectUnauthorized: false }
-})
+const poolConfig = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    }
+  : {
+      user: process.env.PGUSER ?? process.env.user,
+      host: process.env.PGHOST ?? process.env.host,
+      database: process.env.PGDATABASE ?? process.env.database,
+      password: process.env.PGPASSWORD ?? process.env.password,
+      port: Number(process.env.PGPORT ?? process.env.port) || 5432,
+      ssl: { rejectUnauthorized: false }
+    }
+
+const pool = new Pool(poolConfig)
 
 // Insertar nuevo tiempo
 export async function newTime(actualData) {
@@ -23,7 +30,9 @@ export async function newTime(actualData) {
 
 // Obtener todos los tiempos
 export async function getTimes() {
-  const result = await pool.query('SELECT * FROM times')
+  const result = await pool.query(
+    'SELECT timeid AS "timeId", timevalue AS "timeValue", scramble FROM times ORDER BY timeid ASC'
+  )
   return { data: result.rows }
 }
 
